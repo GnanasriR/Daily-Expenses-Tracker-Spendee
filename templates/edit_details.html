@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Details</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-theme" aria-label="Main navigation">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('index') }}">SPENDEE</a>
+      <div>
+        <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('index') }}">Home</a>
+        <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('settings') }}">Settings</a>
+        {% if current_user.is_authenticated %}
+          <a class="btn btn-sm btn-danger" href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a class="btn btn-sm btn-outline-light" href="{{ url_for('login') }}">Profile</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 640px;">
+    <h2>Edit Your Details</h2>
+    <form action="{{ url_for('edit_details') }}" method="post">
+      <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input class="form-control" type="text" name="full_name" value="{{ user.full_name or '' }}" pattern="[A-Za-z ]+" title="Letters and spaces only" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Date of Birth</label>
+        <input class="form-control" type="date" name="dob" value="{{ user.dob or '' }}" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Phone</label>
+        <input class="form-control" type="tel" name="phone" value="{{ user.phone or '' }}" pattern="^\d{10,}$" title="At least 10 digits" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Occupation</label>
+        <input class="form-control" type="text" name="occupation" value="{{ user.occupation or '' }}" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Monthly Income</label>
+        <input class="form-control" type="number" name="income" value="{{ user.income or '' }}" min="0" step="0.01" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Monthly Expenses (manual)</label>
+        <input class="form-control" type="number" name="monthly_expenses" value="{{ user.monthly_expenses or '' }}" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Preferred Currency</label>
+        <input class="form-control" type="text" name="currency" value="{{ user.currency or '' }}" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Savings Goal</label>
+        <input class="form-control" type="number" name="savings_goal" value="{{ user.savings_goal or '' }}" min="0" step="0.01" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Primary Financial Goal</label>
+        <input class="form-control" type="text" name="financial_goal" value="{{ user.financial_goal or '' }}" />
+      </div>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,101 @@
+body {
+background-color: #e6f2f1; /* Light mint */
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+color: #10375c; /* Dark navy */
+padding: 10px 15px;
+margin: 0;
+}
+nav {
+background-color: #10375c;
+padding: 12px 20px;
+border-radius: 6px;
+margin-bottom: 30px;
+box-shadow: 0 2px 6px rgba(20, 83, 116, 0.4);
+}
+nav a
+{
+margin-right: 18px;
+font-weight: 600;
+text-decoration: none;
+font-size: 1.05rem;
+transition: color 0.3s ease;
+}
+nav a:hover{
+color: #ffffff;
+text-decoration: underline;
+}
+.container
+{
+max-width: 480px;
+margin:0 auto;
+background: #e6f2f1;
+padding: 30px 28px;
+border-radius: 10px;
+box-shadow:0 4px 12px rgba
+(16, 55, 92, 0.15);
+}
+.dashboard-chart
+{  /* chart won’t exceed this height */
+margin-top: 30px;
+}
+/* Navbar Theme */
+.navbar-theme {
+ 
+  padding: 10px 15px;
+}
+
+.navbar-theme .navbar-brand {
+  color: #ffffff; /* White text */
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+h2{
+margin-bottom: 28px;
+text-align: center;
+font-weight: 700;
+font-size: 1.8rem;
+letter-spacing: 0.03em;
+color: #10375c;
+}
+
+.navbar-theme .navbar-brand:hover {
+  color: #f1f1f1;
+}
+
+.navbar-theme .nav-btn  {
+  background-color: transparent;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.navbar-theme .nav-btn:hover {
+  background-color: #ffffff;
+  color: #10375c; /* Navy on hover */
+}
+
+.navbar-theme .logout-btn {
+  background-color: transparent; /* Navy */
+  color: #ffffff;
+  border: 2px solid #ffffff;
+}
+
+.navbar-theme .logout-btn:hover {
+  background-color: #e91414;
+}
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  max-height: 600px;  /* prevents oversized chart */
+  margin: 0 auto;    /* center horizontally */
+}
+
+.dashboard-chart {
+  width: 100% !important;
+  height: auto !important;
+}
+

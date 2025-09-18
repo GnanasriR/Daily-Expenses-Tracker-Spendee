@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title> Daily Expenses Tracker</title>
+<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='logo.ico') }}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+/>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+ <nav class="navbar navbar-expand-lg navbar-theme" aria-label="Main navigation">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('index') }}">WELCOME TO SPENDEE</a>
+      <div>
+        <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('index') }}">Home</a>
+        <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a class="btn btn-sm btn-outline-light me-2" href="{{ url_for('settings') }}">Settings</a>
+
+        {# Conditional rendering of Profile/Logout button based on login status #}
+        {% if current_user.is_authenticated %}
+          <a class="btn btn-sm btn-danger" href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a class="btn btn-sm btn-outline-light" href="{{ url_for('login') }}">Profile</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+<div class="container fade-in hover-lift" role="main" style="max-width: 640px; margin-top: 20px;" data-aos="fade-up">
+    {# Flash messages display #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2>Daily Expenses Tracker</h2>
+    <p class="text-center text-muted mb-3">{{ today }}</p>
+    <form id="expense-form" action="{{ url_for('add_expense') }}" method="POST" aria-label="Add expense form">
+        <div class="row g-2 align-items-stretch">
+            <div class="col-12 col-md-6">
+                <input type="text" id="expense-name" name="expense-name" class="form-control" placeholder="Expense Name" required />
+            </div>
+            <div class="col-12 col-md-3">
+                <input type="number" id="expense-amount" name="expense-amount" class="form-control" placeholder="Amount" min="0" step="0.01" required />
+            </div>
+            <div class="col-12 col-md-3 d-grid">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="expense-list mt-4" id="expense-list" aria-live="polite" aria-label="List of expenses">
+        <div class="total" style="margin-bottom: 10px; text-align: right;">
+            Today's Spendings: &#8377; <span id="total-today">{{ "%.2f" % total_today }}</span>
+        </div>
+        {% if expenses %}
+            <ul class="list-group">
+                {% for expense in expenses %}
+                    <li class="list-group-item fade-in" data-aos="fade-right" data-aos-delay="{{ loop.index0 * 50 }}">
+                        <div class="row align-items-center">
+                            <div class="col-6 col-md-6">
+                                <span class="fw-semibold text-primary">{{ expense.name }}</span>
+                            </div>
+                            <div class="col-3 col-md-3 text-md-end">
+                                <span>&#8377;{{ "%.2f" % expense.amount }}</span>
+                            </div>
+                            <div class="col-3 col-md-3 text-end">
+                                <a href="{{ url_for('delete_expense', expense_id=expense.id) }}" class="btn btn-outline-danger btn-sm hover-lift" aria-label="Delete expense">&times;</a>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No expenses added yet. Start tracking!</p>
+        {% endif %}
+    </div>
+    <div class="total mt-3">Total: &#8377; <span id="total-amount">{{ "%.2f" % total_amount }}</span></div>
+</div>
+
+<div class="text-center" style="margin-top: 20px;">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary" style="color: white;">View Dashboard</a>
+</div>
+
+{# Bootstrap 5 JavaScript bundle (Popper and JS) #}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){AOS.init({duration:600,once:true,offset:40});});</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+{% if current_user.is_authenticated %}
+<!-- Monthly Savings Goal Reminder Modal -->
+<div class="modal fade" id="goalReminderModal" tabindex="-1" aria-labelledby="goalReminderLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="border: none;">
+        <h5 class="modal-title" id="goalReminderLabel">Keep Going! 💸</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% if savings_goal %}
+          <p class="mb-2">Your savings goal: <strong>&#8377; {{ savings_goal }}</strong></p>
+        {% else %}
+          <p class="mb-2">Set a savings goal in Settings to track your progress!</p>
+        {% endif %}
+        <p class="mb-0">"Small steps today, big leaps tomorrow. Your future self will thank you!"</p>
+      </div>
+      <div class="modal-footer" style="border: none;">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Got it</button>
+      </div>
+    </div>
+  </div>
+ </div>
+
+<script>
+  // Show reminder in the last 3 days of the month, once per month per browser (only for logged-in users)
+  (function(){
+    try {
+      const now = new Date();
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const isLastThreeDays = now.getDate() >= (daysInMonth - 2);
+      if (!isLastThreeDays) return;
+
+      const key = `goal-reminder-${now.getFullYear()}-${now.getMonth()+1}`;
+      if (localStorage.getItem(key)) return;
+
+      const modalEl = document.getElementById('goalReminderModal');
+      if (!modalEl) return;
+      const modal = new bootstrap.Modal(modalEl);
+      modal.show();
+      localStorage.setItem(key, 'shown');
+    } catch (e) {
+      // no-op
+    }
+  })();
+ </script>
+{% endif %}
+</body>
+</html>
